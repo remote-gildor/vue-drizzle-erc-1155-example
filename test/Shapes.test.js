@@ -20,13 +20,16 @@ contract("Shapes", accounts => {
     instance = await Shapes.deployed();
   });
 
-  describe("Shapes specs", () => {
+  describe("Shapes array", () => {
 
-    it("has ...", async () => {
+    it("has 3 Shape items in the array", async () => {
+      const length = await instance.getShapesArrayLength();
+      assert.equal(BN(length), 3);
+    });
 
-      //const cap = await instance.cap();
-      //assert.equal(cap, ether(100));
-
+    it("fetches the 2nd shape from the array (square)", async () => {
+      const square = await instance.getShapeByIndex(1);
+      assert.equal(web3.utils.hexToUtf8(square[0]), "square");
     });
 
   });
