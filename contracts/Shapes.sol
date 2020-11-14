@@ -9,6 +9,7 @@ contract Shapes is ERC1155MintBurn {
     bytes32 symbol;
     uint supply;
     uint tokenId;
+    uint priceWei;
   }
 
   // array of shape names (the name position in array is its token type id)
@@ -20,7 +21,8 @@ contract Shapes is ERC1155MintBurn {
       name: "circle",
       symbol: "CRC",
       supply: 0,
-      tokenId: 1
+      tokenId: 1,
+      priceWei: 500000000000000000 // 0.5 ETH
     });
 
     shapes.push(circle);
@@ -29,7 +31,8 @@ contract Shapes is ERC1155MintBurn {
       name: "square",
       symbol: "SQR",
       supply: 0,
-      tokenId: 2
+      tokenId: 2,
+      priceWei: 1200000000000000000 // 1.2 ETH
     });
 
     shapes.push(square);
@@ -38,7 +41,8 @@ contract Shapes is ERC1155MintBurn {
       name: "triangle",
       symbol: "TRG",
       supply: 0,
-      tokenId: 3
+      tokenId: 3,
+      priceWei: 330000000000000000 // 0.33 ETH
     });
 
     shapes.push(triangle);
@@ -61,8 +65,8 @@ contract Shapes is ERC1155MintBurn {
 
   // TODO: function deactivateShapeBySymbol()
 
-  function getShapeByIndex(uint index) public view returns (bytes32, bytes32, uint, uint) {
-    return (shapes[index].name, shapes[index].symbol, shapes[index].supply, shapes[index].tokenId);
+  function getShapeByIndex(uint _index) public view returns (bytes32, bytes32, uint, uint) {
+    return (shapes[_index].name, shapes[_index].symbol, shapes[_index].supply, shapes[_index].tokenId);
   }
 
   // TODO: function getShapeBySymbol
@@ -71,8 +75,14 @@ contract Shapes is ERC1155MintBurn {
     return shapes.length;
   }
 
-  // TODO: function mintByTokenId
-    // use super: super._mint(_to, _id, _value, _data);
+  function mintByTokenId(uint256 _tokenId, bytes memory _data) public payable returns (bool) {
+    // user can buy only one Shape token at a time
+    require(msg.value == shapes[_tokenId-1].priceWei, "Wrong amount of ETH sent.");
+
+    super._mint(msg.sender, _tokenId, 1, _data); // mint 1 token and assign it to msg.sender
+
+    return true;
+  }
 
   // TODO: function mintBySymbol
     // If you don't want people to confuse array index and token ID, delete mintByTokenId (or ignore it on front-end) 

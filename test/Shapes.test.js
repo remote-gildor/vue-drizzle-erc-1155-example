@@ -34,4 +34,56 @@ contract("Shapes", accounts => {
 
   });
 
+  describe("Shapes transactions - successful", () => {
+
+    it("can be bought/minted", async () => {
+      const tokenId = 1; // square
+
+      // user's balance before the tx
+      let balanceBefore = await instance.balanceOf(accounts[0], tokenId);
+      assert.equal(BN(balanceBefore), 0);
+      
+      // mint/buy
+      await instance.mintByTokenId(tokenId, web3.utils.hexToBytes("0x0000000000000000000000000000000000000000"), {
+        from: accounts[0],
+        gas: 3000000,
+        value: ether(0.5)
+      });
+
+      // user's balance after the tx
+      let balanceAfter = await instance.balanceOf(accounts[0], tokenId);
+      assert.equal(BN(balanceAfter), 1);
+
+    });
+
+  });
+
+  describe("Shapes transactions - failed", () => {
+
+    it("fails at minting if value paid is incorrect", async () => {
+      const tokenId = 1; // square
+
+      // user's balance before the tx
+      let balanceBefore = await instance.balanceOf(accounts[0], tokenId);
+      
+      // failed mint/buy
+      await expectRevert(
+        instance.mintByTokenId(tokenId, web3.utils.hexToBytes("0x0000000000000000000000000000000000000000"), {
+          from: accounts[0],
+          gas: 3000000,
+          value: ether(0.1) // too low amount, should have been 0.5 to succeed
+        }),
+        "Wrong amount of ETH sent."
+      );
+
+      // user's balance after the tx
+      let balanceAfter = await instance.balanceOf(accounts[0], tokenId);
+
+      // balance before should equal balance after, because the minting failed
+      assert.equal(BN(balanceBefore).toString(), BN(balanceAfter).toString());
+
+    });
+
+  });
+
 });
