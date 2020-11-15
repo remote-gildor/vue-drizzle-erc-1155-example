@@ -57,15 +57,24 @@ contract Shapes is ERC1155MintBurn, Ownable {
     // tokenId is last item id + 1 (must not be shapes.length, unless there's not delete function)
     // increase supply by one
   
-  // TODO: function burnByTokenId
-    // make sure to decrease the supply in Shape
+  function burnByTokenId(uint256 _tokenId) public {
+    super._burn(msg.sender, _tokenId, 1); // burn 1 token that belongs to the msg.sender
+
+    shapes[_tokenId-1].supply -= 1; // decrease supply in shape
+
+    // return the ETH (if possible)
+    if (address(this).balance >= shapes[_tokenId-1].priceWei) {
+      (bool sent, bytes memory data) = msg.sender.call{value: shapes[_tokenId-1].priceWei}("");
+    }
+  } 
 
   // TODO: function burnBySymbol
 
   // TODO: function deactivateShapeBySymbol()
 
-  function getShapeByIndex(uint _index) public view returns (bytes32, bytes32, uint, uint) {
-    return (shapes[_index].name, shapes[_index].symbol, shapes[_index].supply, shapes[_index].tokenId);
+  function getShapeByIndex(uint _index) public view returns (bytes32, bytes32, uint, uint, uint) {
+    return (shapes[_index].name, shapes[_index].symbol, shapes[_index].supply, 
+            shapes[_index].tokenId, shapes[_index].priceWei);
   }
 
   function getShapeBySymbol(bytes32 _symbol) internal view returns (Shape memory) {
@@ -86,6 +95,8 @@ contract Shapes is ERC1155MintBurn, Ownable {
 
     super._mint(msg.sender, _tokenId, 1, _data); // mint 1 token and assign it to msg.sender
 
+    shapes[_tokenId-1].supply += 1;
+
     return true;
   }
 
@@ -100,6 +111,8 @@ contract Shapes is ERC1155MintBurn, Ownable {
     require(msg.value == someShape.priceWei, "Wrong amount of ETH sent.");
 
     super._mint(msg.sender, someShape.tokenId, 1, _data); // mint 1 token and assign it to msg.sender
+
+    someShape.supply += 1;
 
     return true;
   }
