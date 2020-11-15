@@ -12,10 +12,8 @@ contract Shapes is ERC1155MintBurn {
     uint priceWei;
   }
 
-  // array of shape names (the name position in array is its token type id)
   Shape[] public shapes;
 
-  // constructor
   constructor() public {
     Shape memory circle = Shape({
       name: "circle",
@@ -69,7 +67,13 @@ contract Shapes is ERC1155MintBurn {
     return (shapes[_index].name, shapes[_index].symbol, shapes[_index].supply, shapes[_index].tokenId);
   }
 
-  // TODO: function getShapeBySymbol
+  function getShapeBySymbol(bytes32 _symbol) internal view returns (Shape memory) {
+    for (uint i = 0; i < shapes.length; i++) {
+      if (shapes[i].symbol == _symbol) {
+        return shapes[i];
+      }
+    }
+  }
 
   function getShapesArrayLength() public view returns (uint256) {
     return shapes.length;
@@ -84,8 +88,19 @@ contract Shapes is ERC1155MintBurn {
     return true;
   }
 
-  // TODO: function mintBySymbol
-    // If you don't want people to confuse array index and token ID, delete mintByTokenId (or ignore it on front-end) 
-    // and let them use mintBySymbol only (a bit more expensive in terms of gas, but safer to avoid errors)
+  function mintBySymbol(bytes32 _symbol, bytes memory _data) public payable returns (bool) {
+    // Use this function, if you don't want people to confuse array index and token ID
+    // Delete mintByTokenId (or ignore it on front-end) and let them use mintBySymbol only
+    // Note: this function is a bit more expensive in terms of gas, but safer to avoid errors
+    
+    Shape memory someShape = getShapeBySymbol(_symbol);
+
+    // user can buy only one Shape token at a time
+    require(msg.value == someShape.priceWei, "Wrong amount of ETH sent.");
+
+    super._mint(msg.sender, someShape.tokenId, 1, _data); // mint 1 token and assign it to msg.sender
+
+    return true;
+  }
   
 }

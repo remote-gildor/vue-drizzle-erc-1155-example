@@ -36,23 +36,50 @@ contract("Shapes", accounts => {
 
   describe("Shapes transactions - successful", () => {
 
-    it("can be bought/minted", async () => {
-      const tokenId = 1; // square
+    it("can be bought/minted with mintByTokenId", async () => {
+      const tokenId = 1; // circle
 
       // user's balance before the tx
       let balanceBefore = await instance.balanceOf(accounts[0], tokenId);
       assert.equal(BN(balanceBefore), 0);
       
       // mint/buy
-      await instance.mintByTokenId(tokenId, web3.utils.hexToBytes("0x0000000000000000000000000000000000000000"), {
+      const result = await instance.mintByTokenId(tokenId, 
+                                                  web3.utils.hexToBytes("0x0000000000000000000000000000000000000000"), {
         from: accounts[0],
         gas: 3000000,
         value: ether(0.5)
       });
 
+      // gas used: 48545
+      // console.log("Gas used (mintByTokenId): " + result.receipt.gasUsed);
+
       // user's balance after the tx
       let balanceAfter = await instance.balanceOf(accounts[0], tokenId);
       assert.equal(BN(balanceAfter), 1);
+
+    });
+
+    it("can be bought/minted with mintBySymbol", async () => {
+      const tokenId = 2; // square
+
+      // user's balance before the tx
+      let balanceBefore = await instance.balanceOf(accounts[0], tokenId);
+      
+      // mint/buy
+      const result = await instance.mintBySymbol(web3.utils.asciiToHex("SQR"), 
+                                                 web3.utils.hexToBytes("0x0000000000000000000000000000000000000000"), {
+        from: accounts[0],
+        gas: 3000000,
+        value: ether(1.2)
+      });
+
+      // gas used: 57386
+      // console.log("Gas used (mintBySymbol): " + result.receipt.gasUsed);
+
+      // user's balance after the tx
+      let balanceAfter = await instance.balanceOf(accounts[0], tokenId);
+      assert.equal(BN(balanceAfter).toNumber()-BN(balanceBefore).toNumber(), 1);
 
     });
 

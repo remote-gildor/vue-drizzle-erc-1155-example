@@ -147,8 +147,6 @@ An example test is already created (`home.spec.js`). As you can see, there needs
 - Shapes.sol smart contract
   - add new shape
   - deactivate shape
-  - get shape by symbol
-  - mint shape
   - burn shape
 - Truffle tests
 - Vue front-end
