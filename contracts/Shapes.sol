@@ -1,8 +1,9 @@
 pragma solidity ^0.6.8;
 
 import 'multi-token-standard/contracts/tokens/ERC1155/ERC1155MintBurn.sol';
+import 'multi-token-standard/contracts/utils/Ownable.sol';
 
-contract Shapes is ERC1155MintBurn {
+contract Shapes is ERC1155MintBurn, Ownable {
 
   struct Shape {
     bytes32 name;
@@ -101,6 +102,11 @@ contract Shapes is ERC1155MintBurn {
     super._mint(msg.sender, someShape.tokenId, 1, _data); // mint 1 token and assign it to msg.sender
 
     return true;
+  }
+
+  function ownerCollectEther() public onlyOwner returns (bool) {
+    (bool sent, bytes memory data) = owner().call{value: address(this).balance}("");
+    return sent;
   }
   
 }

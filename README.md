@@ -150,4 +150,6 @@ An example test is already created (`home.spec.js`). As you can see, there needs
   - burn shape
 - Truffle tests
 - Vue front-end
+  - mint an NFT
+  - transfer it to another address (safeTransferFrom)
 - Vue tests

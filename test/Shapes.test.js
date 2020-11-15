@@ -83,6 +83,22 @@ contract("Shapes", accounts => {
 
     });
 
+    it("allows owner to collect ETH", async () => {
+      const addressBalanceBefore = await web3.eth.getBalance(instance.address);
+      assert.isTrue(addressBalanceBefore > 0);
+
+      const ethBalanceBefore = await web3.eth.getBalance(accounts[0]);
+      //console.log(web3.utils.fromWei(ethBalanceBefore.toString(), "ether"));
+
+      await instance.ownerCollectEther();
+      
+      const ethBalanceAfter = await web3.eth.getBalance(accounts[0]);
+      assert.isTrue(ethBalanceAfter > ethBalanceBefore);
+
+      const addressBalanceAfter = await web3.eth.getBalance(instance.address);
+      assert.equal(addressBalanceAfter, 0);
+    });
+
   });
 
   describe("Shapes transactions - failed", () => {
