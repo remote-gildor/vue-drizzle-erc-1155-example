@@ -7,30 +7,32 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
   computed: {
-    ...mapGetters("drizzle", ["drizzleInstance"])
+    ...mapGetters("drizzle", ["drizzleInstance"]),
+    ...mapGetters("accounts", ["activeAccount", "activeBalance"]),
   },
   methods: {
-    ...mapActions("profile", ["fetchTestTokenBalance"])
+    ...mapActions("minter", ["fetchActiveShapes"])
   },
   mounted() {
     const contractEventHandler = ({ contractName, eventName, data }) => {
-      let display = `${contractName}(${eventName}) - ${data}`;
+      if (data._from == this.activeAccount) {
+        let display = `${contractName}(${eventName}) - ${data}`;
 
-      if(eventName === 'TokensPurchased') {
-        this.$store.dispatch("profile/fetchTestTokenBalance"); // update the user's token balance in vuex store
+        if(eventName === 'TokenMinted') {
+          let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
+          display = "You have just bought 1 " + symbol + "! :)";
+          this.$store.dispatch("minter/fetchActiveShapes");
+        }
 
-        let tokens = this.drizzleInstance.web3.utils.fromWei(data.amount, "ether");
-        display = "You have just bought " + tokens + " TT tokens! :)";
-      }
+        const subOptions = {
+          theme: "bubble",
+          position: "top-center", 
+          duration: 5000,
+          type: "success"
+        };
 
-      const subOptions = {
-        theme: "bubble",
-        position: "top-center", 
-        duration: 5000,
-        type: "success"
-      };
-
-      this.$toasted.show(display, subOptions);
+        this.$toasted.show(display, subOptions);
+      }  
     };
 
     this.$drizzleEvents.$on('drizzle/contractEvent', payload => {
