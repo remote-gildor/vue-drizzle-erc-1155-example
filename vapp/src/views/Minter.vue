@@ -8,31 +8,28 @@
       </b-col>
     </b-row>
 
-    <b-row class="mt-4">
-      <b-col md="4" offset-md="4" class="text-center">
-        <b-card title="Mint NFTs" sub-title="Enter the amount of ETH to invest">
-          <b-form @submit.prevent="onSubmit">
-            <b-form-group id="input-group-1" label-for="minter-ether-field">
+    <b-card-group deck class="row">
+      <b-col md="4" class="text-center mt-3" v-for="shape in getActiveShapes" :key="shape.symbol"> 
+        <b-card header-tag="header" footer-tag="footer">
+          <template #header>
+            <h6 class="mb-0">Shape</h6>
+          </template>
 
-              <b-input-group append="ETH" class="mt-4 mb-2">
-                <b-form-input 
-                  id="minter-ether-field" 
-                  v-model="ethValue" 
-                  type="text" 
-                  required 
-                  placeholder="0.0"
-                  trim
-                >
-                </b-form-input>
-                
-              </b-input-group>
+          <b-card-title>{{shape.name}} ({{shape.symbol}})</b-card-title>
 
-              <b-button class="mt-2" type="submit" variant="primary">Submit</b-button>
-            </b-form-group>
-          </b-form>
+          <b-card-text class="m-4">
+            <b-icon :icon="shape.name" variant="primary" font-scale="5"></b-icon>
+          </b-card-text>
+
+          <b-button href="#" variant="primary">Mint for {{shape.priceEth}} ETH</b-button>
+
+          <template #footer>
+            <em>Circulating supply: {{shape.supply}} {{shape.symbol}}</em>
+          </template>
         </b-card>
       </b-col>
-    </b-row>
+    </b-card-group>
+
   </b-container>
 </div>
 
@@ -40,23 +37,24 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-    name: "Crowdsale",
+    name: "Minter",
     computed: {
       ...mapGetters("accounts", ["activeAccount", "activeBalance"]),
       ...mapGetters("contracts", ["getContractData"]),
       ...mapGetters("drizzle", ["isDrizzleInitialized", "drizzleInstance"]),
+      ...mapGetters("minter", ["getActiveShapes"]),
     },
     methods: {
-      // buy tokens with ETH
+      ...mapActions("minter", ["fetchActiveShapes"]),
       onSubmit() {
         window.console.log("SUBMIT CLICKED");
       }
     },
     created() {
-
+      this.$store.dispatch("minter/fetchActiveShapes");
     },
     data() {
       return {
