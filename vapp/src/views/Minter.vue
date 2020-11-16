@@ -21,7 +21,9 @@
             <b-icon :icon="shape.name" variant="primary" font-scale="5"></b-icon>
           </b-card-text>
 
-          <b-button href="#" variant="primary">Mint for {{shape.priceEth}} ETH</b-button>
+          <b-button href="#" variant="primary" @click="mintShape(shape)">
+            Mint for {{shape.priceEth}} ETH
+            </b-button>
 
           <template #footer>
             <em>Circulating supply: {{shape.supply}} {{shape.symbol}}</em>
@@ -49,8 +51,16 @@ export default {
     },
     methods: {
       ...mapActions("minter", ["fetchActiveShapes"]),
-      onSubmit() {
-        window.console.log("SUBMIT CLICKED");
+      mintShape(shape) {
+        window.console.log("Mint a shape with ID: " + shape.tokenId);
+        this.drizzleInstance.contracts['Shapes'].methods['mintByTokenId'].cacheSend(
+          shape.tokenId, 
+          this.drizzleInstance.web3.utils.hexToBytes("0x0000000000000000000000000000000000000000"), 
+          {
+            from: this.activeAccount,
+            value: shape.priceWei
+          }
+        )
       }
     },
     created() {

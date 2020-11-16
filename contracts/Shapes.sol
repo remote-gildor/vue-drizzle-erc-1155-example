@@ -80,7 +80,6 @@ contract Shapes is ERC1155MintBurn, Ownable {
 
     return 2;
   }
-    
   
   function burnByTokenId(uint256 _tokenId) public {
     super._burn(msg.sender, _tokenId, 1); // burn 1 token that belongs to the msg.sender
