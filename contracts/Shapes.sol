@@ -11,6 +11,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
     uint supply;
     uint tokenId;
     uint priceWei;
+    bool active;
   }
 
   Shape[] public shapes;
@@ -21,7 +22,8 @@ contract Shapes is ERC1155MintBurn, Ownable {
       symbol: "CRC",
       supply: 0,
       tokenId: 1,
-      priceWei: 500000000000000000 // 0.5 ETH
+      priceWei: 500000000000000000, // 0.5 ETH
+      active: true
     });
 
     shapes.push(circle);
@@ -31,7 +33,8 @@ contract Shapes is ERC1155MintBurn, Ownable {
       symbol: "SQR",
       supply: 0,
       tokenId: 2,
-      priceWei: 1200000000000000000 // 1.2 ETH
+      priceWei: 1200000000000000000, // 1.2 ETH
+      active: true
     });
 
     shapes.push(square);
@@ -41,7 +44,8 @@ contract Shapes is ERC1155MintBurn, Ownable {
       symbol: "TRG",
       supply: 0,
       tokenId: 3,
-      priceWei: 330000000000000000 // 0.33 ETH
+      priceWei: 330000000000000000, // 0.33 ETH
+      active: true
     });
 
     shapes.push(triangle);
@@ -49,13 +53,34 @@ contract Shapes is ERC1155MintBurn, Ownable {
 
   // methods
 
-  // TODO: function addNewShape
-    // must check if shape with that symbol already exists 
-    // if it exists and is deactivated, activate it back
-    // if it exists and is active, revert transaction
+  function addNewShape(bytes32 _name, bytes32 _symbol, uint _price) public onlyOwner returns (uint) {
+    // check if shape with that symbol already exists
+    Shape memory someShape = getShapeBySymbol(_symbol);
+
+    if (someShape.tokenId > 0) { // if token ID > 0, then shape exists
+      if (someShape.active) { // if the existing shape is active, revert the whole tx
+        revert("A Shape with this symbol already exists.");
+      } else { // if the existing shape is not active, re-activate it
+        shapes[someShape.tokenId-1].active = true;
+        return 1;
+      }
+    }
+
     // else create a new shape
-    // tokenId is last item id + 1 (must not be shapes.length, unless there's not delete function)
-    // increase supply by one
+    Shape memory shape = Shape(
+      _name, 
+      _symbol,
+      0, // supply
+      shapes.length, // tokenId
+      _price,
+      true // active
+    );
+
+    shapes.push(shape);
+
+    return 2;
+  }
+    
   
   function burnByTokenId(uint256 _tokenId) public {
     super._burn(msg.sender, _tokenId, 1); // burn 1 token that belongs to the msg.sender
@@ -81,11 +106,20 @@ contract Shapes is ERC1155MintBurn, Ownable {
     }
   }
 
-  // TODO: function deactivateShapeBySymbol()
+  function deactivateShapeBySymbol(bytes32 _symbol) public onlyOwner {
+    // check if shape with that symbol exists
+    Shape memory someShape = getShapeBySymbol(_symbol);
 
-  function getShapeByIndex(uint _index) public view returns (bytes32, bytes32, uint, uint, uint) {
+    if (someShape.tokenId > 0) { // if token ID > 0, then shape exists
+      shapes[someShape.tokenId-1].active = false; // deactivate the shape
+    } else {
+      revert("A Shape with this symbol does not exist.");
+    }
+  }
+
+  function getShapeByIndex(uint _index) public view returns (bytes32, bytes32, uint, uint, uint, bool) {
     return (shapes[_index].name, shapes[_index].symbol, shapes[_index].supply, 
-            shapes[_index].tokenId, shapes[_index].priceWei);
+            shapes[_index].tokenId, shapes[_index].priceWei, shapes[_index].active);
   }
 
   function getShapeBySymbol(bytes32 _symbol) internal view returns (Shape memory) {
@@ -104,6 +138,9 @@ contract Shapes is ERC1155MintBurn, Ownable {
     // user can buy only one Shape token at a time
     require(msg.value == shapes[_tokenId-1].priceWei, "Wrong amount of ETH sent.");
 
+    // check if the shape is active
+    require(shapes[_tokenId-1].active == true, "The selected shape is deactivated.");
+
     super._mint(msg.sender, _tokenId, 1, _data); // mint 1 token and assign it to msg.sender
 
     shapes[_tokenId-1].supply += 1;
@@ -120,6 +157,9 @@ contract Shapes is ERC1155MintBurn, Ownable {
 
     // user can buy only one Shape token at a time
     require(msg.value == someShape.priceWei, "Wrong amount of ETH sent.");
+
+    // check if the shape is active
+    require(someShape.active == true, "The selected shape is deactivated.");
 
     super._mint(msg.sender, someShape.tokenId, 1, _data); // mint 1 token and assign it to msg.sender
 

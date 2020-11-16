@@ -144,10 +144,6 @@ An example test is already created (`home.spec.js`). As you can see, there needs
 
 ## TODO
 
-- Shapes.sol smart contract
-  - add new shape
-  - deactivate shape
-- Truffle tests
 - Vue front-end
   - mint an NFT
   - transfer it to another address (safeTransferFrom)

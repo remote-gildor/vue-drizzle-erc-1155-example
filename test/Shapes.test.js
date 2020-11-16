@@ -37,6 +37,54 @@ contract("Shapes", accounts => {
 
   describe("Shapes transactions - successful", () => {
 
+    it("allows adding a new shape", async () => {
+      const lengthBefore = await instance.getShapesArrayLength();
+      assert.equal(BN(lengthBefore), 3);
+
+      await instance.addNewShape(
+        web3.utils.asciiToHex("cube"),
+        web3.utils.asciiToHex("CBE"),
+        ether(0.666)
+      );
+      
+      const lengthAfter = await instance.getShapesArrayLength();
+      assert.equal(BN(lengthAfter), 4);
+    });
+
+    it("deactivates a shape", async () => {
+      // fetch a shape with tokenId 1 (square)
+      const tokenId = 1;
+      const squareBefore = await instance.getShapeByIndex(tokenId);
+      assert.equal(web3.utils.hexToUtf8(squareBefore[0]), "square"); // get shape name
+      assert.equal(squareBefore[5], true); // assert the shape is active
+
+      // deactivate the shape
+      await instance.deactivateShapeBySymbol(web3.utils.asciiToHex("SQR"));
+
+      // check if the shape is really deactivated
+      const squareAfter = await instance.getShapeByIndex(tokenId);
+      assert.equal(squareAfter[5], false); // assert the shape is deactivated
+    });
+
+    it("reactivates an existing deactivated shape", async () => {
+      // fetch a shape with tokenId 1 (square)
+      const tokenId = 1;
+      const squareBefore = await instance.getShapeByIndex(tokenId);
+      assert.equal(web3.utils.hexToUtf8(squareBefore[0]), "square"); // get shape name
+      assert.equal(squareBefore[5], false); // assert the shape is deactivated
+
+      // re-activate the square shape
+      await instance.addNewShape(
+        web3.utils.asciiToHex("square"),
+        web3.utils.asciiToHex("SQR"),
+        ether(1.2)
+      );
+
+      // check if the shape is really deactivated
+      const squareAfter = await instance.getShapeByIndex(tokenId);
+      assert.equal(squareAfter[5], true); // assert the shape is active again
+    });
+
     it("can be bought/minted with mintByTokenId", async () => {
       const tokenId = 1; // circle
 
@@ -219,6 +267,31 @@ contract("Shapes", accounts => {
       // user's token balance after the tx
       let balanceAfter = await instance.balanceOf(accounts[0], tokenId);
       assert.equal(BN(balanceAfter), 0);
+    });
+
+    it("fails at trying to create an existing active shape", async () => {
+      const lengthBefore = await instance.getShapesArrayLength();
+      assert.equal(BN(lengthBefore), 4); // 4 because some previous test created a new shape (cube)
+
+      await expectRevert(
+        instance.addNewShape(
+          web3.utils.asciiToHex("square"),
+          web3.utils.asciiToHex("SQR"),
+          ether(0.666)
+        ),
+        "A Shape with this symbol already exists"
+      )
+      
+      const lengthAfter = await instance.getShapesArrayLength();
+      assert.equal(BN(lengthAfter), 4); // no new shape was created
+    });
+  
+    it("fails at deactivating a non-existing shape", async () => {
+      // deactivate a non-existing shape
+      await expectRevert(
+        instance.deactivateShapeBySymbol(web3.utils.asciiToHex("NOPE")),
+        "A Shape with this symbol does not exist"
+      )
     });
 
   });
