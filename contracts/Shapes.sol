@@ -68,7 +68,18 @@ contract Shapes is ERC1155MintBurn, Ownable {
     }
   } 
 
-  // TODO: function burnBySymbol
+  function burnBySymbol(bytes32 _symbol) public {
+    Shape memory someShape = getShapeBySymbol(_symbol);
+
+    super._burn(msg.sender, someShape.tokenId, 1); // burn 1 token that belongs to the msg.sender
+
+    someShape.supply -= 1; // decrease supply in shape
+
+    // return the ETH (if possible)
+    if (address(this).balance >= someShape.priceWei) {
+      (bool sent, bytes memory data) = msg.sender.call{value: someShape.priceWei}("");
+    }
+  }
 
   // TODO: function deactivateShapeBySymbol()
 

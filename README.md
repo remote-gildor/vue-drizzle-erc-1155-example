@@ -8,7 +8,7 @@ An example of multiple NFT token categories:
 - squares
 - triangles
 
-Tokens in each NFT category are differentiated by color. For example, two circles cannot share the same color code, but one circle and one square can.
+Categories are non-fungible, while tokens in each of these categories are not.
 
 ## ERC-1155 implementation
 
@@ -147,7 +147,6 @@ An example test is already created (`home.spec.js`). As you can see, there needs
 - Shapes.sol smart contract
   - add new shape
   - deactivate shape
-  - burn shape
 - Truffle tests
 - Vue front-end
   - mint an NFT
