@@ -7,6 +7,8 @@
       <router-view />
     </keep-alive>
 
+    <Footer />
+
     <Toast />
   </div>
 
@@ -23,12 +25,14 @@
 import { mapGetters } from 'vuex';
 import Navbar from "./components/Navbar";
 import Toast from "./components/Toast";
+import Footer from "./components/Footer";
 
 export default {
   name: 'app',
   components: {
     Navbar,
-    Toast
+    Toast,
+    Footer
   },
   computed: mapGetters('drizzle', ['isDrizzleInitialized'])
 }

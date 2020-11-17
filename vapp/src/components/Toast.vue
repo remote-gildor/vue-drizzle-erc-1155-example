@@ -11,7 +11,7 @@ export default {
     ...mapGetters("accounts", ["activeAccount", "activeBalance"]),
   },
   methods: {
-    ...mapActions("minter", ["fetchActiveShapes"])
+    ...mapActions("minter", ["fetchAllShapes"])
   },
   mounted() {
     const contractEventHandler = ({ contractName, eventName, data }) => {
@@ -21,7 +21,7 @@ export default {
         if(eventName === 'TokenMinted') {
           let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
           display = "You have just bought 1 " + symbol + "! :)";
-          this.$store.dispatch("minter/fetchActiveShapes");
+          this.$store.dispatch("minter/fetchAllShapes");
         }
 
         const subOptions = {

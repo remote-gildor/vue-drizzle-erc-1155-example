@@ -1,45 +1,48 @@
 const state = {
-  activeShapes: []
+  allShapes: []
 };
 
 const getters = {
-  getActiveShapes(state) {
-    return state.activeShapes;
+  getAllShapes(state) {
+    return state.allShapes;
   }
 };
 
 const actions = {
-  async fetchActiveShapes({ commit, rootState }) {
+  async fetchAllShapes({ commit, rootState }) {
     let drizzleInstance = rootState.drizzle.drizzleInstance;
     let web3 = drizzleInstance.web3;
+    let currentUser = rootState.accounts.activeAccount;
 
     let shapesCount = await drizzleInstance.contracts.Shapes.methods.getShapesArrayLength().call();
 
-    let activeShapesList = [];
+    let allShapesList = [];
 
     for (let i=0; i < shapesCount; i++) {
+      // get shape data
       let currentShape = await drizzleInstance.contracts.Shapes.methods.getShapeByIndex(i).call();
 
-      if (currentShape[5]) { // if shape is active, add it to the activeShapesList
-        let name = web3.utils.hexToUtf8(currentShape[0]);
-        let symbol = web3.utils.hexToUtf8(currentShape[1]);
-        let supply = currentShape[2];
-        let tokenId = currentShape[3];
-        let priceWei = currentShape[4];
-        let priceEth = web3.utils.fromWei(currentShape[4], "ether");
-        let active = currentShape[5];
+      let name = web3.utils.hexToUtf8(currentShape[0]);
+      let symbol = web3.utils.hexToUtf8(currentShape[1]);
+      let supply = currentShape[2];
+      let tokenId = currentShape[3];
+      let priceWei = currentShape[4];
+      let priceEth = web3.utils.fromWei(currentShape[4], "ether");
+      let active = currentShape[5];
+
+      // get current user's balance for this specific shape
+      let userBalance = await drizzleInstance.contracts.Shapes.methods.balanceOf(currentUser, currentShape[3]).call();
         
-        activeShapesList.push({name, symbol, supply, tokenId, priceWei, priceEth, active});
-      }
+      allShapesList.push({name, symbol, supply, tokenId, priceWei, priceEth, active, userBalance});
     }
 
-    commit("setActiveShapesList", activeShapesList);
+    commit("setAllShapesList", allShapesList);
   }
 };
 
 const mutations = {
-  setActiveShapesList(state, aShapes) {
-    state.activeShapes = aShapes;
+  setAllShapesList(state, aShapes) {
+    state.allShapes = aShapes;
   }
 };
 
