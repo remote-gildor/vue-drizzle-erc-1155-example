@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
+import Admin from "./views/Admin";
 import Home from "./views/Home";
 import Minter from "./views/Minter";
 import Profile from "./views/Profile";
@@ -26,6 +27,11 @@ export default new Router({
             path: "/profile",
             name: "profile",
             component: Profile
+        },
+        {
+            path: "/admin",
+            name: "admin",
+            component: Admin
         }
     ],
     linkActiveClass: "active"

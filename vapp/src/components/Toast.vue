@@ -18,11 +18,11 @@ export default {
       if (data._from == this.activeAccount) {
         let display = `${contractName}(${eventName}) - ${data}`;
 
-        if(eventName === 'TokenMinted') {
+        if (eventName === 'TokenMinted') {
           let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
           display = "You have just bought 1 " + symbol + "! :)";
           this.$store.dispatch("minter/fetchAllShapes");
-        } else if(eventName === 'TokenBurned') {
+        } else if (eventName === 'TokenBurned') {
           let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
           display = "You have just BURNED 1 " + symbol + "! :O";
           this.$store.dispatch("minter/fetchAllShapes");
