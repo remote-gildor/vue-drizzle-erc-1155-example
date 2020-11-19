@@ -39,6 +39,10 @@
                                 <b-icon :icon="shape.name" variant="primary" font-scale="5"></b-icon>
                             </b-card-text>
 
+                            <b-button href="#" variant="danger" @click="burnShape(shape)">
+                                Burn your token
+                            </b-button>
+
                             <template #footer>
                                 <em>My balance: {{shape.userBalance}} {{shape.symbol}}</em>
                             </template>
@@ -63,6 +67,7 @@ export default {
     computed: {
         ...mapGetters("accounts", ["activeAccount", "activeBalance"]),
         ...mapGetters("drizzle", ["isDrizzleInitialized", "drizzleInstance"]),
+        ...mapGetters('contracts', ['getContractData', 'contractInstances']),
         ...mapGetters("minter", ["getAllShapes"]),
 
         userAccount() {
@@ -86,6 +91,24 @@ export default {
     },
     methods: {
         ...mapActions("minter", ["fetchAllShapes"]),
+        ...mapActions("profile", ["burnShape"]),
+
+        call(contract, method, args) {
+            let key = this.drizzleInstance.contracts[contract].methods[method].cacheCall(...args)
+            let value;
+
+            try {
+                value = this.contractInstances[contract][method][key].value;
+            } catch (error) {
+                value = null;
+            }
+            
+            return value;
+        },
+
+        burnShape(shape) {
+            this.drizzleInstance.contracts["Shapes"].methods["burnByTokenId"].cacheSend(shape.tokenId);
+        }
     }
 }
 </script>

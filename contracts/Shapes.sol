@@ -18,6 +18,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
 
   // events
   event TokenMinted(address indexed _from, bytes32 indexed _symbol);
+  event TokenBurned(address indexed _from, bytes32 indexed _symbol);
 
   constructor() public {
     Shape memory circle = Shape({
@@ -84,7 +85,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
     return 2;
   }
   
-  function burnByTokenId(uint256 _tokenId) public {
+  function burnByTokenId(uint256 _tokenId) public returns (bool) {
     super._burn(msg.sender, _tokenId, 1); // burn 1 token that belongs to the msg.sender
 
     shapes[_tokenId-1].supply -= 1; // decrease supply in shape
@@ -93,6 +94,10 @@ contract Shapes is ERC1155MintBurn, Ownable {
     if (address(this).balance >= shapes[_tokenId-1].priceWei) {
       (bool sent, bytes memory data) = msg.sender.call{value: shapes[_tokenId-1].priceWei}("");
     }
+
+    emit TokenBurned(msg.sender, shapes[_tokenId-1].symbol);
+
+    return true;
   } 
 
   function burnBySymbol(bytes32 _symbol) public {
@@ -106,6 +111,8 @@ contract Shapes is ERC1155MintBurn, Ownable {
     if (address(this).balance >= someShape.priceWei) {
       (bool sent, bytes memory data) = msg.sender.call{value: someShape.priceWei}("");
     }
+
+    emit TokenBurned(msg.sender, someShape.symbol);
   }
 
   function deactivateShapeBySymbol(bytes32 _symbol) public onlyOwner {
@@ -168,6 +175,8 @@ contract Shapes is ERC1155MintBurn, Ownable {
     super._mint(msg.sender, someShape.tokenId, 1, _data); // mint 1 token and assign it to msg.sender
 
     someShape.supply += 1;
+
+    emit TokenMinted(msg.sender, someShape.symbol);
 
     return true;
   }
