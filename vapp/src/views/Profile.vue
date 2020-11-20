@@ -40,7 +40,7 @@
                             </b-card-text>
 
                             <b-button href="#" variant="danger" @click="burnShape(shape)">
-                                Burn your token
+                                Burn 1 {{shape.symbol}}
                             </b-button>
 
                             <template #footer>

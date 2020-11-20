@@ -20,11 +20,15 @@ export default {
 
         if (eventName === 'TokenMinted') {
           let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
-          display = "You have just bought 1 " + symbol + "! :)";
+          display = "You have just bought 1 " + symbol + "! 💰🤑";
           this.$store.dispatch("minter/fetchAllShapes");
         } else if (eventName === 'TokenBurned') {
           let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
-          display = "You have just BURNED 1 " + symbol + "! :O";
+          display = "You have just burned 1 " + symbol + "! 🔥😮";
+          this.$store.dispatch("minter/fetchAllShapes");
+        } else if (eventName === 'ShapeAdded') {
+          let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
+          display = "Admin has added a new shape with a symbol " + symbol + ". 🆕";
           this.$store.dispatch("minter/fetchAllShapes");
         }
 

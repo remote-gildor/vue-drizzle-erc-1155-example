@@ -19,6 +19,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
   // events
   event TokenMinted(address indexed _from, bytes32 indexed _symbol);
   event TokenBurned(address indexed _from, bytes32 indexed _symbol);
+  event ShapeAdded(address indexed _from, bytes32 indexed _symbol);
 
   constructor() public {
     Shape memory circle = Shape({
@@ -75,12 +76,14 @@ contract Shapes is ERC1155MintBurn, Ownable {
       _name, 
       _symbol,
       0, // supply
-      shapes.length, // tokenId
+      shapes.length+1, // tokenId
       _price,
       true // active
     );
 
     shapes.push(shape);
+
+    emit ShapeAdded(msg.sender, shape.symbol);
 
     return 2;
   }
