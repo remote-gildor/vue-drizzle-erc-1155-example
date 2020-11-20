@@ -10,7 +10,7 @@ const options = {
   },
   contracts: [Shapes],
   events: {
-    Shapes: ['TokenMinted', 'TokenBurned', 'ShapeAdded', 'ShapeDeactivated']
+    Shapes: ['TokenMinted', 'TokenBurned', 'ShapeAdded', 'ShapeDeactivated', 'EtherCollected']
   },
   polls: {
     accounts: 15000

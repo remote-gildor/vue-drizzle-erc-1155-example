@@ -150,9 +150,3 @@ npm run test:unit
 ```
 
 An example test is already created (`home.spec.js`). As you can see, there needs to be a **mock** Vue Store (see `helpers/storeHelper.js`). The Vue tests cannot connect to Ganache (if you've figured out the opposite, please open an issue in this repo).
-
-## TODO
-
-- Vue front-end
-  - owner: see contract balance and collect ETH
-- Vue tests

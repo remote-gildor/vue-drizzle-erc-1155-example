@@ -35,7 +35,7 @@ describe('Home.vue (drizzle initialized)', () => {
   });
 
   it('shows the text that only appears when Drizzle is initialized (meaning MetaMask is connected)', () => {
-    expect(wrapper.text()).to.include("Click the button below to see the Crowdsale page");
+    expect(wrapper.text()).to.include("Click the button below to see the Minter page Mint NFT tokens!");
   });
 });
 

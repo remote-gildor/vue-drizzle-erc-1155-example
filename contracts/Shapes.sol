@@ -21,6 +21,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
   event TokenBurned(address indexed _from, bytes32 indexed _symbol);
   event ShapeAdded(address indexed _from, bytes32 indexed _symbol);
   event ShapeDeactivated(address indexed _from, bytes32 indexed _symbol);
+  event EtherCollected(address indexed _from, uint indexed _balance);
 
   constructor() public {
     Shape memory circle = Shape({
@@ -187,7 +188,9 @@ contract Shapes is ERC1155MintBurn, Ownable {
   }
 
   function ownerCollectEther() public onlyOwner returns (bool) {
-    (bool sent, bytes memory data) = owner().call{value: address(this).balance}("");
+    uint balance = address(this).balance;
+    (bool sent, bytes memory data) = owner().call{value: balance}("");
+    emit EtherCollected(msg.sender, balance);
     return sent;
   }
   

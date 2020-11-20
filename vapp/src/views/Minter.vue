@@ -23,7 +23,7 @@
           <b-card-title>{{shape.name}} ({{shape.symbol}})</b-card-title>
 
           <b-card-text class="m-4">
-            <b-icon :icon="shape.name" variant="primary" font-scale="5"></b-icon>
+            <b-icon :icon="shape.name" animation="fade" variant="primary" font-scale="5"></b-icon>
           </b-card-text>
 
           <b-button href="#" variant="primary" @click="mintShape(shape)">
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
     name: "Minter",
@@ -54,8 +54,6 @@ export default {
       ...mapGetters("minter", ["getAllShapes"]),
     },
     methods: {
-      ...mapActions("minter", ["fetchAllShapes"]),
-
       getActiveShapes() {
         let activeShapes = [];
         for (let shape of this.getAllShapes) {

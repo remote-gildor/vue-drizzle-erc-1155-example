@@ -91,6 +91,23 @@
           </b-card>
         </b-col>
       </b-row>
+
+      <!-- COLLECT ETH -->
+      <b-row class="mt-2">
+        <b-col md="4" offset-md="4" class="text-center">
+          <b-card title="Collect ETH from the Shape contract">
+
+            <p>Current balance: {{getContractEthBalance}} ETH</p>
+
+            <b-form @submit.prevent="collectEth">
+              <b-form-group>
+                <b-button class="mt-2" type="submit" variant="success">Collect {{getContractEthBalance}} ETH</b-button>
+              </b-form-group>
+            </b-form>
+          </b-card>
+        </b-col>
+      </b-row>
+
     </div>
   </b-container>
 </div>
@@ -105,6 +122,7 @@ export default {
     ...mapGetters("accounts", ["activeAccount", "activeBalance"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters("drizzle", ["isDrizzleInitialized", "drizzleInstance"]),
+    ...mapGetters("admin", ["getContractEthBalance"]),
 
     isActiveUserAdmin() {
         let owner = this.getContractData({
@@ -127,6 +145,8 @@ export default {
       method: "owner",
       methodArgs: []
     });
+
+    this.$store.dispatch("admin/fetchContractEthBalance");
   },
   data() { 
     return {
@@ -143,6 +163,9 @@ export default {
         this.drizzleInstance.web3.utils.asciiToHex(this.addShapeSymbol),
         this.drizzleInstance.web3.utils.toWei(this.addShapePrice, 'ether')
       );
+    },
+    collectEth() {
+      this.drizzleInstance.contracts['Shapes'].methods['ownerCollectEther'].cacheSend();
     },
     deactivateShape() {
       this.drizzleInstance.contracts['Shapes'].methods['deactivateShapeBySymbol'].cacheSend(

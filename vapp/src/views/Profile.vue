@@ -36,7 +36,7 @@
                             <b-card-title>{{shape.name}} ({{shape.symbol}})</b-card-title>
 
                             <b-card-text class="m-4">
-                                <b-icon :icon="shape.name" variant="primary" font-scale="5"></b-icon>
+                                <b-icon :icon="shape.name" animation="fade" variant="primary" font-scale="5"></b-icon>
                             </b-card-text>
 
                             <b-button href="#" variant="danger" @click="burnShape(shape)">
