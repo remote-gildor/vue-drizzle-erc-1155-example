@@ -30,6 +30,10 @@ export default {
           let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
           display = "Admin has added a new shape with a symbol " + symbol + ". 🆕";
           this.$store.dispatch("minter/fetchAllShapes");
+        } else if (eventName === 'ShapeDeactivated') {
+          let symbol = this.drizzleInstance.web3.utils.hexToUtf8(data._symbol);
+          display = "Admin has deactivated the " + symbol + " shape. 🛑";
+          this.$store.dispatch("minter/fetchAllShapes");
         }
 
         const subOptions = {

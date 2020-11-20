@@ -20,6 +20,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
   event TokenMinted(address indexed _from, bytes32 indexed _symbol);
   event TokenBurned(address indexed _from, bytes32 indexed _symbol);
   event ShapeAdded(address indexed _from, bytes32 indexed _symbol);
+  event ShapeDeactivated(address indexed _from, bytes32 indexed _symbol);
 
   constructor() public {
     Shape memory circle = Shape({
@@ -124,6 +125,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
 
     if (someShape.tokenId > 0) { // if token ID > 0, then shape exists
       shapes[someShape.tokenId-1].active = false; // deactivate the shape
+      emit ShapeDeactivated(msg.sender, someShape.symbol);
     } else {
       revert("A Shape with this symbol does not exist.");
     }

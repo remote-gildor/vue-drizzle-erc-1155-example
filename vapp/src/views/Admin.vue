@@ -2,6 +2,7 @@
 <div v-if="isDrizzleInitialized">
   <b-container class="mt-3">
 
+    <!-- INTRO -->
     <b-row>
       <b-col md="8" offset-md="2" class="text-center"> 
         <h1>Admin</h1>
@@ -19,6 +20,7 @@
 
     <div v-if="isActiveUserAdmin">
 
+      <!-- ADD A NEW SHAPE -->
       <b-row class="mt-2">
         <b-col md="4" offset-md="4" class="text-center">
           <b-card title="Add new shape">
@@ -27,7 +29,6 @@
 
                 <b-input-group prepend="Name:" class="mt-4 mb-2">
                   <b-form-input 
-                    id="add-new-shape-name" 
                     v-model="addShapeName" 
                     type="text" 
                     required 
@@ -39,7 +40,6 @@
 
                 <b-input-group prepend="Symbol:" class="mt-4 mb-2">
                   <b-form-input 
-                    id="add-new-shape-symbol" 
                     v-model="addShapeSymbol" 
                     type="text" 
                     required 
@@ -51,7 +51,6 @@
 
                 <b-input-group append="ETH" prepend="Shape price:" class="mt-4 mb-2">
                   <b-form-input 
-                    id="add-new-shape-price" 
                     v-model="addShapePrice" 
                     type="text" 
                     required 
@@ -59,10 +58,34 @@
                     trim
                   >
                   </b-form-input>
-                  
                 </b-input-group>
 
                 <b-button class="mt-2" type="submit" variant="primary">Submit</b-button>
+              </b-form-group>
+            </b-form>
+          </b-card>
+        </b-col>
+      </b-row>
+
+      <!-- DEACTIVATE A SHAPE -->
+      <b-row class="mt-2">
+        <b-col md="4" offset-md="4" class="text-center">
+          <b-card title="Deactivate a Shape">
+            <b-form @submit.prevent="deactivateShape">
+              <b-form-group>
+
+                <b-input-group prepend="Symbol:" class="mt-4 mb-2">
+                  <b-form-input 
+                    v-model="deactivateShapeSymbol" 
+                    type="text" 
+                    required 
+                    placeholder="E.g. SQR"
+                    trim
+                  >
+                  </b-form-input>
+                </b-input-group>
+
+                <b-button class="mt-2" type="submit" variant="danger">Deactivate {{deactivateShapeSymbol}}</b-button>
               </b-form-group>
             </b-form>
           </b-card>
@@ -109,7 +132,8 @@ export default {
     return {
       addShapeName: null,
       addShapeSymbol: null,
-      addShapePrice: 0
+      addShapePrice: 0,
+      deactivateShapeSymbol: null
     }
   },
   methods: {
@@ -118,6 +142,11 @@ export default {
         this.drizzleInstance.web3.utils.asciiToHex(this.addShapeName),
         this.drizzleInstance.web3.utils.asciiToHex(this.addShapeSymbol),
         this.drizzleInstance.web3.utils.toWei(this.addShapePrice, 'ether')
+      );
+    },
+    deactivateShape() {
+      this.drizzleInstance.contracts['Shapes'].methods['deactivateShapeBySymbol'].cacheSend(
+        this.drizzleInstance.web3.utils.asciiToHex(this.deactivateShapeSymbol)
       );
     }
   }

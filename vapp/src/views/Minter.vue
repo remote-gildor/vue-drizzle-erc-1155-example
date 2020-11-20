@@ -14,28 +14,26 @@
     </b-row>
 
     <b-card-group deck class="row">
-      <b-col md="4" class="text-center mt-3" v-for="shape in getAllShapes" :key="shape.symbol"> 
-        <div v-if="shape.active">
-          <b-card header-tag="header" footer-tag="footer">
-            <template #header>
-              <h6 class="mb-0">Shape</h6>
-            </template>
+      <b-col md="4" class="text-center mt-3" v-for="shape in getActiveShapes()" :key="shape.symbol"> 
+        <b-card header-tag="header" footer-tag="footer">
+          <template #header>
+            <h6 class="mb-0">Shape</h6>
+          </template>
 
-            <b-card-title>{{shape.name}} ({{shape.symbol}})</b-card-title>
+          <b-card-title>{{shape.name}} ({{shape.symbol}})</b-card-title>
 
-            <b-card-text class="m-4">
-              <b-icon :icon="shape.name" variant="primary" font-scale="5"></b-icon>
-            </b-card-text>
+          <b-card-text class="m-4">
+            <b-icon :icon="shape.name" variant="primary" font-scale="5"></b-icon>
+          </b-card-text>
 
-            <b-button href="#" variant="primary" @click="mintShape(shape)">
-              Mint for {{shape.priceEth}} ETH
-            </b-button>
+          <b-button href="#" variant="primary" @click="mintShape(shape)">
+            Mint for {{shape.priceEth}} ETH
+          </b-button>
 
-            <template #footer>
-              <em>Circulating supply: {{shape.supply}} {{shape.symbol}}</em>
-            </template>
-          </b-card>
-        </div>
+          <template #footer>
+            <em>Circulating supply: {{shape.supply}} {{shape.symbol}}</em>
+          </template>
+        </b-card>
       </b-col>
     </b-card-group>
 
@@ -57,6 +55,16 @@ export default {
     },
     methods: {
       ...mapActions("minter", ["fetchAllShapes"]),
+
+      getActiveShapes() {
+        let activeShapes = [];
+        for (let shape of this.getAllShapes) {
+          if (shape.active) {
+            activeShapes.push(shape);
+          }
+        }
+        return activeShapes; 
+      },
       mintShape(shape) {
         this.drizzleInstance.contracts['Shapes'].methods['mintByTokenId'].cacheSend(
           shape.tokenId, 

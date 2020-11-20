@@ -1,7 +1,5 @@
 # An ERC-1155 example made with Truffle, Drizzle, and Vue
 
-> **IMPORTANT:** This project is not completed yet! (See TODO at the bottom of readme.md)
-
 An example of multiple NFT token categories:
 
 - circles
@@ -115,7 +113,18 @@ npm run serve
 
 ## Screenshots
 
-...
+### Minter page
+
+![](assets/img/screenshot-minter.png)
+
+### Profile page
+
+![](assets/img/screenshot-profile-1.png)
+![](assets/img/screenshot-profile-2.png)
+
+### Admin page
+
+![](assets/img/screenshot-admin.png)
 
 ## Tests
 
@@ -145,6 +154,5 @@ An example test is already created (`home.spec.js`). As you can see, there needs
 ## TODO
 
 - Vue front-end
-  - mint an NFT
-  - transfer it to another address (safeTransferFrom)
+  - owner: see contract balance and collect ETH
 - Vue tests
