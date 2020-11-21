@@ -12,6 +12,21 @@ Categories are non-fungible, while tokens in each of these categories are not.
 
 This project uses the [Arcadeum ERC-1155 implementation](https://github.com/arcadeum/multi-token-standard).
 
+## Screenshots
+
+### Minter page
+
+![](assets/img/screenshot-minter.png)
+
+### Profile page
+
+![](assets/img/screenshot-profile-1.png)
+![](assets/img/screenshot-profile-2.png)
+
+### Admin page
+
+![](assets/img/screenshot-admin.png)
+
 ## Setup
 
 ### Install Truffle
@@ -110,21 +125,6 @@ npm run serve
 - Vue Bootstrap
 - Vue Toasted
 - Vue Gravatar
-
-## Screenshots
-
-### Minter page
-
-![](assets/img/screenshot-minter.png)
-
-### Profile page
-
-![](assets/img/screenshot-profile-1.png)
-![](assets/img/screenshot-profile-2.png)
-
-### Admin page
-
-![](assets/img/screenshot-admin.png)
 
 ## Tests
 
