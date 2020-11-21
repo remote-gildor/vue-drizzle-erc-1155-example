@@ -5,6 +5,7 @@ An example of multiple NFT token categories:
 - circles
 - squares
 - triangles
+- etc. (contract owner can create new categories)
 
 Categories are non-fungible, while tokens in each of these categories are not.
 
