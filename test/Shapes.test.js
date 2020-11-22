@@ -85,7 +85,7 @@ contract("Shapes", accounts => {
       assert.equal(squareAfter[5], true); // assert the shape is active again
     });
 
-    it("can be bought/minted with mintByTokenId", async () => {
+    it("can be minted with mintByTokenId", async () => {
       const tokenId = 1; // circle
 
       // user's balance before the tx
@@ -109,13 +109,17 @@ contract("Shapes", accounts => {
 
     });
 
-    it("can be bought/minted with mintBySymbol", async () => {
+    it("can be minted with mintBySymbol", async () => {
       const tokenId = 2; // square
 
       // user's balance before the tx
       let balanceBefore = await instance.balanceOf(accounts[0], tokenId);
+
+      // check token supply before the minting
+      const squareBefore = await instance.getShapeByIndex(tokenId-1);
+      assert.equal(squareBefore[2], 0); // assert the square supply is 0
       
-      // mint/buy
+      // mint
       const result = await instance.mintBySymbol(web3.utils.asciiToHex("SQR"), 
                                                  web3.utils.hexToBytes("0x0000000000000000000000000000000000000000"), {
         from: accounts[0],
@@ -129,6 +133,10 @@ contract("Shapes", accounts => {
       // user's balance after the tx
       let balanceAfter = await instance.balanceOf(accounts[0], tokenId);
       assert.equal(BN(balanceAfter).toNumber()-BN(balanceBefore).toNumber(), 1);
+
+      // check token supply after the minting
+      const squareAfter = await instance.getShapeByIndex(tokenId-1);
+      assert.equal(BN(squareAfter[2]).toNumber(), 1); // assert the square supply is 1
 
     });
 

@@ -110,7 +110,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
 
     super._burn(msg.sender, someShape.tokenId, 1); // burn 1 token that belongs to the msg.sender
 
-    someShape.supply -= 1; // decrease supply in shape
+    shapes[someShape.tokenId-1].supply -= 1; // decrease supply in shape
 
     // return the ETH (if possible)
     if (address(this).balance >= someShape.priceWei) {
@@ -180,7 +180,7 @@ contract Shapes is ERC1155MintBurn, Ownable {
 
     super._mint(msg.sender, someShape.tokenId, 1, _data); // mint 1 token and assign it to msg.sender
 
-    someShape.supply += 1;
+    shapes[someShape.tokenId-1].supply += 1;
 
     emit TokenMinted(msg.sender, someShape.symbol);
 
