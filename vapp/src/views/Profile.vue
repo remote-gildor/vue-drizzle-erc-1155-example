@@ -27,7 +27,7 @@
             </div>
 
             <b-card-group deck class="row mt-4 text-center">
-                <b-col md="4" v-for="shape in getUserShapes" :key="shape.symbol"> 
+                <b-col md="4" v-for="shape in getUserShapes" :key="shape.symbol">
                         <b-card header-tag="header" footer-tag="footer">
                             <template #header>
                                 <h6 class="mb-1">Shape</h6>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import Gravatar from "vue-gravatar";
 
 export default {
@@ -83,29 +83,13 @@ export default {
                     userShapes.push(shape);
                 }
             }
-            return userShapes; 
+            return userShapes;
         }
     },
     created() {
         this.$store.dispatch("minter/fetchAllShapes");
     },
     methods: {
-        ...mapActions("minter", ["fetchAllShapes"]),
-        ...mapActions("profile", ["burnShape"]),
-
-        call(contract, method, args) {
-            let key = this.drizzleInstance.contracts[contract].methods[method].cacheCall(...args)
-            let value;
-
-            try {
-                value = this.contractInstances[contract][method][key].value;
-            } catch (error) {
-                value = null;
-            }
-            
-            return value;
-        },
-
         burnShape(shape) {
             this.drizzleInstance.contracts["Shapes"].methods["burnByTokenId"].cacheSend(shape.tokenId);
         }
