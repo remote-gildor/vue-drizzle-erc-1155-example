@@ -52,9 +52,9 @@ contract("Shapes", accounts => {
     });
 
     it("deactivates a shape", async () => {
-      // fetch a shape with tokenId 1 (square)
-      const tokenId = 1;
-      const squareBefore = await instance.getShapeByIndex(tokenId);
+      // fetch a shape with token index 1 (square, the second shape)
+      const tokenIndex = 1;
+      const squareBefore = await instance.getShapeByIndex(tokenIndex);
       assert.equal(web3.utils.hexToUtf8(squareBefore[0]), "square"); // get shape name
       assert.equal(squareBefore[5], true); // assert the shape is active
 
@@ -62,14 +62,14 @@ contract("Shapes", accounts => {
       await instance.deactivateShapeBySymbol(web3.utils.asciiToHex("SQR"));
 
       // check if the shape is really deactivated
-      const squareAfter = await instance.getShapeByIndex(tokenId);
+      const squareAfter = await instance.getShapeByIndex(tokenIndex);
       assert.equal(squareAfter[5], false); // assert the shape is deactivated
     });
 
     it("reactivates an existing deactivated shape", async () => {
-      // fetch a shape with tokenId 1 (square)
-      const tokenId = 1;
-      const squareBefore = await instance.getShapeByIndex(tokenId);
+      // fetch a shape with token index 1 (square)
+      const tokenIndex = 1;
+      const squareBefore = await instance.getShapeByIndex(tokenIndex);
       assert.equal(web3.utils.hexToUtf8(squareBefore[0]), "square"); // get shape name
       assert.equal(squareBefore[5], false); // assert the shape is deactivated
 
@@ -81,7 +81,7 @@ contract("Shapes", accounts => {
       );
 
       // check if the shape is really deactivated
-      const squareAfter = await instance.getShapeByIndex(tokenId);
+      const squareAfter = await instance.getShapeByIndex(tokenIndex);
       assert.equal(squareAfter[5], true); // assert the shape is active again
     });
 
